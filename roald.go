@@ -7,6 +7,6 @@ import (
 
 
 func main() {
-    app := gui.CreateBaseApp()
-    app.Exec()
+    mainWindow := gui.CreateBaseApp()
+    mainWindow.Show()
 }
