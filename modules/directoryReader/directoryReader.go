@@ -14,6 +14,7 @@ func GetDrives() (drives []rune) {
     // Loads the kernel32 library for the GetLogicalDrives function
     kernel32, err :=  syscall.LoadLibrary("kernel32.dll")
     if err != nil {
+        log.Print("Error loading kernel32.dll")
         log.Fatal(err)
     }
     defer syscall.FreeLibrary(kernel32)
@@ -21,15 +22,14 @@ func GetDrives() (drives []rune) {
     // Gets the address of the GetLogicalDrives function
     getLogicalDrives, err := syscall.GetProcAddress(kernel32, "GetLogicalDrives")
     if err != nil {
+        log.Print("Error getting address of GetLogicalDrives")
         log.Fatal(err)
     }
 
     // Calls the GetLogicalDrives function
     // This returns a bit map of the drives where the lowest bit is drive A
-    r, _, err := syscall.SyscallN(uintptr(getLogicalDrives), 0, 0, 0, 0)
-    if err != nil {
-        log.Fatal(err)
-    }
+    // Returns an error even though the function is successful
+    r, _, _ := syscall.SyscallN(uintptr(getLogicalDrives), 0, 0, 0, 0) 
     bitMap := uint32(r)
 
     // Converts the bit map to a slice of runes representing the names of the drives
@@ -43,4 +43,26 @@ func GetDrives() (drives []rune) {
     }
 
     return
+}
+
+
+func TestDiskSpace() int64 {
+    kernel32, err :=  syscall.LoadLibrary("kernel32.dll")
+    if err != nil {
+        log.Print("Error loading kernel32.dll")
+        log.Fatal(err)
+    }
+    defer syscall.FreeLibrary(kernel32)
+
+    // Gets the address of the GetLogicalDrives function
+    getFreeDiskSpaceA, err := syscall.GetProcAddress(kernel32, "GetDiskFreeSpaceExA")
+    if err != nil {
+        log.Print("Error getting address of GetLogicalDrives")
+        log.Fatal(err)
+    }
+
+    var freeBytes int64
+    x, _, _ := syscall.SyscallN(uintptr(getFreeDiskSpaceA), 1, uintptr(freeBytes), 0, 0) 
+    x = x
+    return freeBytes
 }

@@ -1,12 +1,18 @@
 package main
 
-
 import (
-    "gui"
+	"directoryReader"
+	"fmt"
+	"gui"
 )
 
 
 func main() {
-    mainWindow := gui.CreateBaseApp()
-    mainWindow.Show()
+    app, mainWindow := gui.CreateBaseApp()
+    drives := directoryReader.GetDrives()
+    gui.ShowDrives(drives, mainWindow)
+
+    fmt.Println(directoryReader.TestDiskSpace())
+
+    app.Exec()
 }

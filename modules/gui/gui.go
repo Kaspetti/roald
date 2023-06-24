@@ -8,23 +8,28 @@ import (
 )
 
 
-func CreateBaseApp() *widgets.QMainWindow {
+func CreateBaseApp() (*widgets.QApplication, *widgets.QMainWindow) {
     app := widgets.NewQApplication(len(os.Args), os.Args)
 
     mainWindow := widgets.NewQMainWindow(nil, 0)
-    mainWindow.SetWindowTitle("File Explorer")
-    mainWindow.SetMinimumSize2(800, 600)
+    mainWindow.SetWindowTitle("Roald")
 
-    title := widgets.NewQLabel2("File Explorer", mainWindow, 0)
-    title.SetStyleSheet("font-size: 20px; font-weight: bold;")
-
-    mainLayout := widgets.NewQVBoxLayout()
-    mainLayout.AddWidget(title, 100, 0)
-
-    mainWindow.SetLayout(mainLayout)
     mainWindow.Show()
 
-    app.Exec()
+    return app, mainWindow
+}
 
-    return mainWindow
+
+func ShowDrives(drives []rune, mainWindow *widgets.QMainWindow) {
+    driveLayout := widgets.NewQGridLayout2()
+
+    for i, drive :=  range drives {
+        driveButton := widgets.NewQPushButton2(string(drive), nil)
+
+        driveLayout.AddWidget2(driveButton, 0, i, 0)
+    }
+
+    driveWidget := widgets.NewQWidget(nil, 0)
+    driveWidget.SetLayout(driveLayout)
+    mainWindow.SetCentralWidget(driveWidget)
 }
